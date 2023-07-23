@@ -1,0 +1,68 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+struct Student {
+    string name;
+    int rollNumber;
+    double marks;
+};
+
+void addStudent(vector<Student>& students) {
+    Student newStudent;
+    cout << "Enter student name: ";
+    cin.ignore(); // Ignore the newline character left in the buffer from previous input
+    getline(cin, newStudent.name);
+    cout << "Enter roll number: ";
+    cin >> newStudent.rollNumber;
+    cout << "Enter marks: ";
+    cin >> newStudent.marks;
+    
+    students.push_back(newStudent);
+    cout << "Student added successfully!" << endl;
+}
+
+void displayStudents(const vector<Student>& students) {
+    if (students.empty()) {
+        cout << "No students in the record." << endl;
+        return;
+    }
+
+    cout << "Student Records:" << endl;
+    for (const Student& student : students) {
+        cout << "Name: " << student.name << ", Roll Number: " << student.rollNumber << ", Marks: " << student.marks << endl;
+    }
+}
+
+int main() {
+    vector<Student> students;
+    int choice;
+
+    do {
+        cout << endl;
+        cout << "Student Record Management System" << endl;
+        cout << "1. Add Student" << endl;
+        cout << "2. Display Students" << endl;
+        cout << "3. Exit" << endl;
+        cout << "Enter your choice (1-3): ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                addStudent(students);
+                break;
+            case 2:
+                displayStudents(students);
+                break;
+            case 3:
+                cout << "Exiting the program. Goodbye!" << endl;
+                break;
+            default:
+                cout << "Invalid choice! Please try again." << endl;
+                break;
+        }
+    } while (choice != 3);
+
+    return 0;
+}
