@@ -1,0 +1,137 @@
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+struct FoodItem {
+    string name;
+    double price;
+};
+
+struct Customer {
+    string name;
+    string phoneNumber;
+};
+
+struct Order {
+    FoodItem item;
+    int quantity;
+};
+
+void addFoodItem(vector<FoodItem>& menu) {
+    FoodItem newItem;
+    cout << "Enter food item name: ";
+    cin.ignore(); // Ignore the newline character left in the buffer from previous input
+    getline(cin, newItem.name);
+    cout << "Enter price: ";
+    cin >> newItem.price;
+
+    menu.push_back(newItem);
+    cout << "Food item added successfully!" << endl;
+}
+
+void displayMenu(const vector<FoodItem>& menu) {
+    cout << "Menu:" << endl;
+    for (const FoodItem& item : menu) {
+        cout << "Food Item: " << item.name << ", Price: " << item.price << endl;
+    }
+}
+
+bool findFoodItemByName(const vector<FoodItem>& menu, string name, FoodItem& foundItem) {
+    for (const FoodItem& item : menu) {
+        if (item.name == name) {
+            foundItem = item;
+            return true;
+        }
+    }
+    return false;
+}
+
+void takeOrder(vector<FoodItem>& menu, vector<Order>& orders) {
+    string name;
+    cout << "Enter your name: ";
+    cin.ignore(); // Ignore the newline character left in the buffer from previous input
+    string customerName;
+    getline(cin, customerName);
+    cout << "Enter your phone number: ";
+    string phoneNumber;
+    cin >> phoneNumber;
+
+    displayMenu(menu);
+
+    cout << "Enter the food item you want to order: ";
+    cin.ignore(); // Ignore the newline character left in the buffer from previous input
+    getline(cin, name);
+
+    FoodItem foundItem;
+    if (findFoodItemByName(menu, name, foundItem)) {
+        int quantity;
+        cout << "Enter quantity: ";
+        cin >> quantity;
+
+        Order order;
+        order.item = foundItem;
+        order.quantity = quantity;
+
+        orders.push_back(order);
+
+        cout << "Order placed successfully!" << endl;
+    } else {
+        cout << "Food item not found in the menu." << endl;
+    }
+}
+
+void displayOrders(const vector<Order>& orders) {
+    if (orders.empty()) {
+        cout << "No orders placed yet." << endl;
+        return;
+    }
+
+    cout << "Order Details:" << endl;
+    for (const Order& order : orders) {
+        cout << "Customer Name: " << order.item.name << ", Phone Number: " << order.item.price << endl;
+        cout << "Food Item - Name: " << order.item.name << ", Price: " << order.item.price << endl;
+        cout << "Quantity: " << order.quantity << ", Total Cost: " << (order.quantity * order.item.price) << endl;
+    }
+}
+
+int main() {
+    vector<FoodItem> menu;
+    vector<Order> orders;
+    int choice;
+
+    do {
+        cout << endl;
+        cout << "Canteen Management System" << endl;
+        cout << "1. Add Food Item" << endl;
+        cout << "2. Display Menu" << endl;
+        cout << "3. Take Order" << endl;
+        cout << "4. Display Orders" << endl;
+        cout << "5. Exit" << endl;
+        cout << "Enter your choice (1-5): ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                addFoodItem(menu);
+                break;
+            case 2:
+                displayMenu(menu);
+                break;
+            case 3:
+                takeOrder(menu, orders);
+                break;
+            case 4:
+                displayOrders(orders);
+                break;
+            case 5:
+                cout << "Exiting the program. Goodbye!" << endl;
+                break;
+            default:
+                cout << "Invalid choice! Please try again." << endl;
+                break;
+        }
+    } while (choice != 5);
+
+    return 0;
+}
