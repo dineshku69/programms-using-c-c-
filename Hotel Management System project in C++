@@ -1,0 +1,149 @@
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+struct Room {
+    int roomNumber;
+    string type;
+    double pricePerNight;
+    bool isAvailable;
+};
+
+struct Customer {
+    string name;
+    string phoneNumber;
+};
+
+struct Booking {
+    Room room;
+    Customer customer;
+    int nights;
+};
+
+void addRoom(vector<Room>& rooms) {
+    Room newRoom;
+    cout << "Enter room number: ";
+    cin >> newRoom.roomNumber;
+    cout << "Enter room type: ";
+    cin.ignore(); // Ignore the newline character left in the buffer from previous input
+    getline(cin, newRoom.type);
+    cout << "Enter price per night: ";
+    cin >> newRoom.pricePerNight;
+    newRoom.isAvailable = true;
+
+    rooms.push_back(newRoom);
+    cout << "Room added successfully!" << endl;
+}
+
+void displayAvailableRooms(const vector<Room>& rooms) {
+    cout << "Available Rooms:" << endl;
+    for (const Room& room : rooms) {
+        if (room.isAvailable) {
+            cout << "Room Number: " << room.roomNumber << ", Type: " << room.type << ", Price per night: " << room.pricePerNight << endl;
+        }
+    }
+}
+
+bool findAvailableRoomByType(const vector<Room>& rooms, string type, Room& availableRoom) {
+    for (const Room& room : rooms) {
+        if (room.isAvailable && room.type == type) {
+            availableRoom = room;
+            return true;
+        }
+    }
+    return false;
+}
+
+void bookRoom(vector<Room>& rooms, vector<Booking>& bookings) {
+    string type;
+    cout << "Enter your name: ";
+    cin.ignore(); // Ignore the newline character left in the buffer from previous input
+    string name;
+    getline(cin, name);
+    cout << "Enter your phone number: ";
+    string phoneNumber;
+    cin >> phoneNumber;
+
+    displayAvailableRooms(rooms);
+
+    cout << "Enter the type of room you want to book: ";
+    cin.ignore(); // Ignore the newline character left in the buffer from previous input
+    getline(cin, type);
+
+    Room availableRoom;
+    if (findAvailableRoomByType(rooms, type, availableRoom)) {
+        int nights;
+        cout << "Enter number of nights: ";
+        cin >> nights;
+
+        availableRoom.isAvailable = false;
+
+        Booking booking;
+        booking.room = availableRoom;
+        booking.customer.name = name;
+        booking.customer.phoneNumber = phoneNumber;
+        booking.nights = nights;
+
+        bookings.push_back(booking);
+
+        cout << "Room booked successfully!" << endl;
+    } else {
+        cout << "No available room of the requested type." << endl;
+    }
+}
+
+void displayBookings(const vector<Booking>& bookings) {
+    if (bookings.empty()) {
+        cout << "No bookings made yet." << endl;
+        return;
+    }
+
+    cout << "Booking Details:" << endl;
+    for (const Booking& booking : bookings) {
+        cout << "Customer Name: " << booking.customer.name << ", Phone Number: " << booking.customer.phoneNumber << endl;
+        cout << "Room Details - Room Number: " << booking.room.roomNumber << ", Type: " << booking.room.type << ", Price per night: " << booking.room.pricePerNight << endl;
+        cout << "Number of Nights: " << booking.nights << ", Total Booking Cost: " << (booking.nights * booking.room.pricePerNight) << endl;
+    }
+}
+
+int main() {
+    vector<Room> rooms;
+    vector<Booking> bookings;
+    int choice;
+
+    do {
+        cout << endl;
+        cout << "Hotel Management System" << endl;
+        cout << "1. Add Room" << endl;
+        cout << "2. Display Available Rooms" << endl;
+        cout << "3. Book Room" << endl;
+        cout << "4. Display Bookings" << endl;
+        cout << "5. Exit" << endl;
+        cout << "Enter your choice (1-5): ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                addRoom(rooms);
+                break;
+            case 2:
+                displayAvailableRooms(rooms);
+                break;
+            case 3:
+                bookRoom(rooms, bookings);
+                break;
+            case 4:
+                displayBookings(bookings);
+                break;
+            case 5:
+                cout << "Exiting the program. Goodbye!" << endl;
+                break;
+            default:
+                cout << "Invalid choice! Please try again." << endl;
+                break;
+        }
+    } while (choice != 5);
+
+    return 0;
+}
